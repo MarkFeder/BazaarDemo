@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BazaarDemo.BackEnd", "BazaarDemo.BackEnd", "{C460844D-21E2-46BB-883E-4DA2BB2FA390}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BazaarDemo.FrontEnd", "BazaarDemo.FrontEnd", "{872EC17E-3F46-44E2-8B10-6785B409CA57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BazaarDemo.BackEnd.Domain", "BazaarDemo.BackEnd.Domain\BazaarDemo.BackEnd.Domain.csproj", "{9FB65223-081C-446E-8512-F9A5C0FB0764}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BazaarDemo.BackEnd.Domain.Models", "BazaarDemo.BackEnd.Domain.Models\BazaarDemo.BackEnd.Domain.Models.csproj", "{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FB65223-081C-446E-8512-F9A5C0FB0764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FB65223-081C-446E-8512-F9A5C0FB0764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FB65223-081C-446E-8512-F9A5C0FB0764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB65223-081C-446E-8512-F9A5C0FB0764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9FB65223-081C-446E-8512-F9A5C0FB0764} = {C460844D-21E2-46BB-883E-4DA2BB2FA390}
+		{923A43F6-B41C-4D0F-8DD0-58B1293EEEBF} = {C460844D-21E2-46BB-883E-4DA2BB2FA390}
+	EndGlobalSection
+EndGlobal
