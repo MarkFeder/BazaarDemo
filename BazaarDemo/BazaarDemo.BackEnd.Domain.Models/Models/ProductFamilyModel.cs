@@ -24,9 +24,6 @@ namespace BazaarDemo.BackEnd.Domain.Models
         [DataMember]
         public string ProductFamilyName { get; set; }
 
-        [DataMember]
-        public string ProductFamilyDescription { get; set; }
-
         [NavigationProperty]
         [DataMember]
         public virtual ICollection<ProductModel> Products { get; set; }

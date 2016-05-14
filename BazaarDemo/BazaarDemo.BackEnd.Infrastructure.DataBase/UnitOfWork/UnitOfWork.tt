@@ -1,0 +1,322 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="EnvDTE80" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell.11.0" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell.Interop" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="EnvDTE80" #>
+<#@ import namespace="Microsoft.VisualStudio.Shell" #>
+<#@ import namespace="Microsoft.VisualStudio.Shell.Interop" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ output extension=".cs"#>
+<#
+//===================================================================================================
+// BEGIN OF EDITABLE AREA. CHANGES OUTSIDE HERE ARE WITHOUT SUPPORT FROM EVERIS ↑↑
+//===================================================================================================
+// Uncoment the following line and change the debug attribute in the template tag to allow debugging
+//System.Diagnostics.Debugger.Launch();
+
+//Entity Framework version (5 or 6):
+int efVersion = 5;
+//Created class name:
+string containerName = "DataContext";
+//Namespace where find classes:
+string rootNamespace = "BazaarDemo.BackEnd.Domain.Entities";
+//Entity Repositories Namespace:
+string entityRepositoriesNamespace = "BazaarDemo.BackEnd.Domain.Contracts.EntityRepositories";
+//Include additional using statements here:
+List<string> usingList = new List<string>(){
+	//rootNamespace,
+	"BazaarDemo.BackEnd.Domain.Contracts.UnitOfWork",
+	"System.Diagnostics.CodeAnalysis",
+	"System.CodeDom.Compiler",
+	"System.Runtime.Serialization",
+	"EverNext.Domain.Model"
+};
+//===================================================================================================
+// END OF EDITABLE AREA. CHANGES OUTSIDE HERE ARE WITHOUT SUPPORT FROM EVERIS ↓↓
+//===================================================================================================
+CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+CodeRegion region = new CodeRegion(this, 1);
+MetadataTools ef = new MetadataTools(this);
+
+string namespaceName = code.VsNamespaceSuggestion();
+
+if(FindClasses(rootNamespace, "", "BaseEntity").Any(c=>c.ImplementedInterfaces.OfType<CodeInterface>()
+                                                            .Any(d=>d.Name.Equals("IAggregateRoot"))))
+{
+    usingList.Add(entityRepositoriesNamespace);
+}
+
+EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+WriteHeader(fileManager, efVersion, usingList.ToArray());
+BeginNamespace(namespaceName, code);
+
+#>
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+[System.CodeDom.Compiler.GeneratedCode("GeneratedCode","1.0")]
+ public class UnitOfWork : IUnitOfWork
+  {
+    System.Data.Entity.DbContext _context;
+
+    public UnitOfWork(): this(new <#=containerName#>())
+    {
+
+    }
+
+    public UnitOfWork(System.Data.Entity.DbContext entities)
+    {
+        if (entities == null)
+        {
+            throw new ArgumentNullException("context wasn't supplied");
+        }
+
+        _context = entities;
+        (_context as IObjectContextAdapter).ObjectContext.Connection.Open();
+    }
+
+
+    #region Properties
+
+<#
+foreach (var classes in FindClasses(rootNamespace, "", "BaseEntity").Where(c=>c.ImplementedInterfaces.OfType<CodeInterface>()
+                                                                                    .Any(d=>d.Name.Equals("IAggregateRoot"))))
+{
+	string capitalizedClassName = CapitalizeFirstLetter(classes.Name);
+#>
+    I<#= capitalizedClassName #>Repository _<#= capitalizedClassName #>Repository;
+    public I<#= capitalizedClassName #>Repository <#= capitalizedClassName #>Repository
+    {
+        get
+        {
+            return _<#= capitalizedClassName #>Repository;
+        }
+        set
+        {
+            _<#= capitalizedClassName #>Repository = value;
+        }
+    }   
+<#
+    }
+#>
+    #endregion
+
+    #region Methods
+
+    public void Commit()
+    {
+        _context.SaveChanges();
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_context != null)
+            {
+                _context.Dispose();
+                _context = null;
+            }
+        }
+    }
+
+    #endregion
+  }
+
+<#
+    EndNamespace(namespaceName);
+#>
+<#+
+
+    private System.Collections.Generic.List<CodeClass> FindClasses(string nameSpace, string className, string baseClassName)
+    {
+        System.Collections.Generic.List<CodeClass> result = new System.Collections.Generic.List<CodeClass>();
+        FindClasses(GetProject().CodeModel.CodeElements, className, baseClassName, nameSpace, result, false);
+        return result;
+
+    }
+
+    private void FindClasses(CodeElements elements, string className, string baseClassName, string searchNamespace, List<CodeClass> result, bool isNamespaceOk)
+    {
+        if (elements == null) return;
+        foreach (CodeElement element in elements)
+        {
+            if (element is EnvDTE.CodeNamespace)
+            {
+                EnvDTE.CodeNamespace ns = element as EnvDTE.CodeNamespace;
+                if (ns != null)
+                {
+                    if (ns.FullName.StartsWith(searchNamespace))
+                        FindClasses(ns.Members, className, baseClassName, searchNamespace, result, true);
+                    else
+                        FindClasses(ns.Members, className, baseClassName, searchNamespace, result, false);
+                }
+            }
+            else if (element is CodeClass && isNamespaceOk)
+            {
+                CodeClass c = element as CodeClass;
+                if (c != null)
+                {
+                    if (c.FullName.Contains(className) && (baseClassName == null || (HasIt(c.Bases, baseClassName) && c.Name != baseClassName)))
+                        result.Add(c);
+
+                    FindClasses(c.Members, className, baseClassName, searchNamespace, result, true);
+                }
+
+            }
+        }
+    }
+
+    private bool HasIt(CodeElements elements, string name)
+    {
+        foreach (CodeElement element in elements)
+        {
+            CodeClass c = element as CodeClass;
+            if (c != null && c.Bases != null)
+            {
+                if (HasIt(c.Bases, name))
+                {
+                    return true;
+                }
+            }
+
+            if (element.Name == name)
+                return true;
+        }
+        return false;
+    }
+
+	private List<CodeClass> GetPartialClasses(CodeClass2 c)
+    {
+        System.Collections.Generic.List<CodeClass> result = new System.Collections.Generic.List<CodeClass>();
+        foreach (CodeClass2 p in c.PartialClasses)
+        {
+            result.Add(p);
+        }
+
+        return result;
+    }
+
+    private Project GetProject()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        DTE dte = serviceProvider.GetService(typeof(DTE)) as DTE; 
+        // Get DTE
+        //var dte = (DTE)TransformationContext.Current.GetService(typeof(DTE));
+
+        // Get ProjectItem representing the template file
+        ProjectItem projectItem = dte.Solution.FindProjectItem(this.Host.TemplateFile);
+
+        // Get the Project of the template file
+        Project project = projectItem.ContainingProject;
+
+        return project;
+    }
+
+    private string GetDefaultNamespace()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        DTE dte = serviceProvider.GetService(typeof(DTE)) as DTE; 
+        // Get DTE
+        //var dte = (DTE)TransformationContext.Current.GetService(typeof(DTE));
+
+        // Get ProjectItem representing the template file
+        ProjectItem projectItem = dte.Solution.FindProjectItem(this.Host.TemplateFile);
+
+        // Get the Project of the template file
+        Project project = projectItem.ContainingProject;
+
+        var vsSolution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
+        IVsHierarchy vsHierarchy;
+        ErrorHandler.ThrowOnFailure(vsSolution.GetProjectOfUniqueName(project.FullName, out vsHierarchy));
+        uint projectItemId;
+        ErrorHandler.ThrowOnFailure(vsHierarchy.ParseCanonicalName(projectItem.FileNames[1], out projectItemId));
+        object defaultNamespace;
+        ErrorHandler.ThrowOnFailure(vsHierarchy.GetProperty(projectItemId, (int)VsHierarchyPropID.DefaultNamespace, out defaultNamespace));
+        return ((string)defaultNamespace);
+    }
+
+	private ProjectItem GetProjectItemFromTemplate()
+{
+    IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+    DTE dte = serviceProvider.GetService(typeof(DTE)) as DTE; 
+
+    // Get ProjectItem representing the template file
+    ProjectItem projectItem = dte.Solution.FindProjectItem(this.Host.TemplateFile);
+        
+    return projectItem;
+}
+
+private string CapitalizeFirstLetter(string s)
+{
+    if (String.IsNullOrEmpty(s))
+        return s;
+    if (s.Length == 1)
+        return s.ToUpper();
+    return s.Remove(1).ToUpper() + s.Substring(1);
+}
+
+void WriteHeader(EntityFrameworkTemplateFileManager fileManager,int efVersion, params string[] extraUsings)
+{
+        fileManager.StartHeader();
+#>
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated from a template (UnitOfWork.tt).
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+<#+ if(efVersion < 6){ #>
+using System.Data.Objects;
+using System.Data.Objects.DataClasses;
+<#+ }else{ #>
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Objects.DataClasses;
+<#+ } #>
+using System.Linq;
+
+<#=String.Join(String.Empty, extraUsings.Select(u => "using " + u + ";" + Environment.NewLine).ToArray())#>
+<#+
+        fileManager.EndBlock();
+    }
+
+    void BeginNamespace(string namespaceName, CodeGenerationTools code)
+    {
+        CodeRegion region = new CodeRegion(this);
+        if (!String.IsNullOrEmpty(namespaceName))
+        {
+#>
+namespace <#=code.EscapeNamespace(namespaceName)#>
+{
+<#+
+            PushIndent(CodeRegion.GetIndent(1));
+        }
+    }
+
+    void EndNamespace(string namespaceName)
+    {
+        if (!String.IsNullOrEmpty(namespaceName))
+        {
+            PopIndent();
+#>
+}
+<#+
+        }
+	}
+
+
+#>

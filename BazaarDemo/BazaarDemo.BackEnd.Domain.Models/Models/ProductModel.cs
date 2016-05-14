@@ -12,7 +12,7 @@ namespace BazaarDemo.BackEnd.Domain.Models
     [DataContract(Name = "ProductModel")]
     [KnownType(typeof(OrderModel))]
     [KnownType(typeof(ProductFamilyModel))]
-    public class ProductModel : BaseEntity
+    public class ProductModel : BaseEntity, IModelAggregateRoot
     {
         public ProductModel()
     	{
@@ -23,14 +23,9 @@ namespace BazaarDemo.BackEnd.Domain.Models
         [DataMember]
         public int ProductId { get; set; }
 
+        [Required]
         [DataMember]
         public string ProductName { get; set; }
-
-        [DataMember]
-        public string ProductDescription { get; set; }
-
-        [DataMember]
-        public decimal? ProductCost { get; set; }
 
         [ForeignKey("ProductFamily"), Column("ProductFamilyId")]
         [DataMember]

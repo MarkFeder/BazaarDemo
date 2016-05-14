@@ -10,7 +10,7 @@ namespace BazaarDemo.BackEnd.Domain.Models
     [DataContract(Name = "OrderModel")]
     [KnownType(typeof(CustomerModel))]
     [KnownType(typeof(ProductModel))]
-    public class OrderModel : BaseEntity, IModelAggregateRoot
+    public class OrderModel : BaseEntity
     {
         public OrderModel()
         {
