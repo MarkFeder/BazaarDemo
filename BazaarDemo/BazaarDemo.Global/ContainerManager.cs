@@ -22,10 +22,8 @@ namespace BazaarDemo.Global
                 {
                     _container = new WindsorContainer(new XmlInterpreter());
 
-                    _container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero);
-
                     // Run all Installers from this global point    
-                    _container.Install(FromAssembly.InDirectory(new AssemblyFilter(System.AppDomain.CurrentDomain.RelativeSearchPath, "BazaarDemo.BackEnd*.dll")));
+                    _container.Install(FromAssembly.InDirectory(new AssemblyFilter(System.AppDomain.CurrentDomain.RelativeSearchPath, "BazaarDemo.BackEnd.*.dll")));
                 }
 
                 return _container;

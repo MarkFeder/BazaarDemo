@@ -97,6 +97,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DomainServices.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Services\BazaarService.svc" />
     <Content Include="Web.config" />
@@ -117,6 +120,10 @@
       <Project>{9fb65223-081c-446e-8512-f9a5c0fb0764}</Project>
       <Name>BazaarDemo.BackEnd.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BazaarDemo.BackEnd.Infrastructure.DataBase\BazaarDemo.BackEnd.Infrastructure.DataBase.csproj">
+      <Project>{6d459739-63a1-48b5-bede-4390354c3191}</Project>
+      <Name>BazaarDemo.BackEnd.Infrastructure.DataBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -126,6 +133,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

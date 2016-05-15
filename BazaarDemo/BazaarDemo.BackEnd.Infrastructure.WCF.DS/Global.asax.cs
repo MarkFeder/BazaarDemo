@@ -20,6 +20,8 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS
         protected void Application_Start(object sender, EventArgs e)
         {
             _container = ContainerManager.Container;
+
+            _container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero);
         }
 
         protected void Session_Start(object sender, EventArgs e)

@@ -14,6 +14,8 @@ using System.Data.Entity;
 using BazaarDemo.BackEnd.Infrastructure.DataBase.Context;
 using BazaarDemo.BackEnd.Domain.Contracts.UnitOfWork.DataBase;
 using EverNext.Domain.Contracts.Services;
+using BazaarDemo.BackEnd.Domain.Contracts.EntityRepositories;
+using BazaarDemo.BackEnd.Infrastructure.DataBase.Repositories.Entities;
 
 namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
 {
@@ -29,8 +31,9 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
 
                 RegisterMapper(container);
 
-                InitializeMappings();
+                RegisterRepositories(container);
 
+                InitializeMappings();
             }
             catch (Exception ex)
             {
@@ -58,6 +61,21 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
             container.Register(Component.For<IObjectMapper>()
                                     .ImplementedBy<EverNext.Infrastructure.AutoMapper.Mapper>()
                                     .LifestylePerWebRequest());
+        }
+
+        private void RegisterRepositories(IWindsorContainer container)
+        {
+            container.Register(Component.For<ICustomerRepository>()
+                .ImplementedBy<CustomerRepository>()
+                .LifestylePerWebRequest());
+
+            container.Register(Component.For<IProductFamilyRepository>()
+                .ImplementedBy<ProductFamilyRepository>()
+                .LifestylePerWebRequest());
+
+            container.Register(Component.For<IProductRepository>()
+                .ImplementedBy<ProductRepository>()
+                .LifestylePerWebRequest());
         }
 
         private void PerfomMapping<T, M>()

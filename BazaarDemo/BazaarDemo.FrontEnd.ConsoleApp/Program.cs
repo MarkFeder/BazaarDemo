@@ -19,8 +19,6 @@ namespace BazaarDemo.FrontEnd.ConsoleApp
         private static int port = 5369;
         private static string baseAddress = null;
 
-        private static BazaarService.IBazaarService BazaarService { get; set; }
-
         #endregion
 
         public static void Main(string[] args)
@@ -43,9 +41,13 @@ namespace BazaarDemo.FrontEnd.ConsoleApp
         #region Tasks
         private static void Task0()
         {
-            Console.WriteLine("The number of products in Bazaar is : " + BazaarService.TotalProductsInBazaar());
+            BazaarServiceClient sv = new BazaarServiceClient();
 
-            BazaarService = null;
+            Console.WriteLine("The number of products in Bazaar is : " + sv.TotalProductsInBazaar());
+
+            sv.Close();
+                
+            sv = null;
         }
 
         private static void Task1()
