@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using BazaarDemo.BackEnd.Domain.Models;
 using BazaarDemo.BackEnd.Domain.Entities;
 
-namespace BazaarDemo.BackEnd.Domain.Services.Services
+namespace BazaarDemo.BackEnd.Domain.Services
 {
     public class BazaarService : IBazaarService
     {

@@ -49,6 +49,8 @@
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,20 +61,57 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\BazaarService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Service References\BazaarService\BazaarService.wsdl" />
+    <None Include="Service References\BazaarService\BazaarService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BazaarService\BazaarService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BazaarDemo.BackEnd.Domain.Models\BazaarDemo.BackEnd.Domain.Models.csproj">
       <Project>{923a43f6-b41c-4d0f-8dd0-58b1293eeebf}</Project>
       <Name>BazaarDemo.BackEnd.Domain.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BazaarDemo.BackEnd.Domain.Services\BazaarDemo.BackEnd.Domain.Services.csproj">
+      <Project>{8c7fb1cf-24a0-48d0-942f-0c632ece219b}</Project>
+      <Name>BazaarDemo.BackEnd.Domain.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BazaarDemo.BackEnd.Domain\BazaarDemo.BackEnd.Domain.csproj">
       <Project>{9fb65223-081c-446e-8512-f9a5c0fb0764}</Project>
       <Name>BazaarDemo.BackEnd.Domain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\BazaarService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BazaarService\BazaarService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BazaarService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BazaarService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BazaarService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

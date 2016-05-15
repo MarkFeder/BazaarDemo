@@ -17,187 +17,68 @@
 // Uncoment the following line and change the debug attribute in the template tag to allow debugging
 //System.Diagnostics.Debugger.Launch();
 
-// Suffix to append to all the generated files
+//Suffix of created file:
 string filenameSuffix = "Repository.cs";
-// Suffix used to identify the classe being searched for
-string modelSuffix= "Model";
-// Namespace suffix to remove from the classes in case of using CommonPrefix logic
-string namespaceSuffixToDelete = "Models";
-// Root namespace of the project holding the classes to look for
-string rootNameSpace = "BazaarDemo.BackEnd.Domain.Models";
-// Root namespace of the entities
-string entitiesNamespace = "BazaarDemo.BackEnd.Domain.Entities";
+//Namespace where find classes:
+string rootNamespace = "BazaarDemo.BackEnd.Domain.Entities";
 // include additional using statements here
 List<string> usingList = new List<string>(){
-			rootNameSpace,
-            "BazaarDemo.BackEnd.Domain.Contracts.Specifications",
+			rootNamespace,
+            "BazaarDemo.BackEnd.Domain.Contracts.EntityRepositories",
             "EverNext.Domain.Contracts.Repositories",
-            "System.ServiceModel",
-            "System.CodeDom.Compiler",
-            "EverNext.Domain.Contracts.Model",
-			entitiesNamespace
+            "EverNext.Infrastructure.EntityFramework.DbContext",
+			"System.CodeDom.Compiler",
+            "EverNext.Domain.Contracts.Model"
 };
 //===================================================================================================
 // END OF EDITABLE AREA. CHANGES OUTSIDE HERE ARE WITHOUT SUPPORT FROM EVERIS ↓↓
 //===================================================================================================
 
 CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+CodeRegion region = new CodeRegion(this, 1);
+MetadataTools ef = new MetadataTools(this);
+
 string namespaceName =  code.VsNamespaceSuggestion();
+EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+// Write out support code to primary template output file
+WriteHeader(fileManager, usingList.ToArray());
+BeginNamespace(namespaceName, code);
+EndNamespace(namespaceName);
 
 // Emit Entity Types
-foreach (var classes in FindClasses(rootNameSpace, "", "BaseEntity").Where(c=>c.ImplementedInterfaces.OfType<CodeInterface>()
-                                                                                      .Any(d=>d.Name.Equals("IModelAggregateRoot"))))
+
+foreach (CodeClass classes in FindClasses(rootNamespace, "", "BaseEntity").Where(c=>c.ImplementedInterfaces.OfType<CodeInterface>()
+                                                                                      .Any(d=>d.Name.Equals("IAggregateRoot"))))
 {
-    string modelName = CapitalizeFirstLetter(classes.Name);
-
-    if(!modelName.EndsWith(modelSuffix))
-            continue;
-
-    string entityName = modelName.Replace(modelSuffix,string.Empty);
-    string modelFullName= classes.FullName;
-    string FolderPath = modelFullName.Replace(rootNameSpace, "").Replace('.','\\');
-
-    FolderPath = FolderPath.Substring(0, FolderPath.LastIndexOf(modelName));
-    if(FolderPath.EndsWith("\\"))
-    {
-        FolderPath = FolderPath.Remove(FolderPath.LastIndexOf("\\"));
-    }
-    if(FolderPath.StartsWith("\\"))
-    {
-        FolderPath = FolderPath.Remove(FolderPath.IndexOf("\\"),1);
-    }
-    string FileName = "I" + modelName + filenameSuffix;
-
-    var IsGoingToBeAService = classes.ImplementedInterfaces.OfType<CodeInterface>().Any(d=>d.Name.Equals("IDeserveAService"));
-	string entityNamespace = "";
-	foreach (var e in FindClasses(entitiesNamespace, "", "BaseEntity"))
-	{
-		if(entityName.Equals(e.Name))
-		{
-			entityNamespace = e.FullName;
-			break;
-		}
-	}
-    using(System.IO.FileStream file = BeginFile(FolderPath, FileName))
-    {
-        WriteHeader(usingList.ToArray());
-        BeginNamespace(namespaceName+classes.Namespace.FullName.Replace(rootNameSpace, ""), code);
+	string capitalizedClassName = CapitalizeFirstLetter(classes.Name);
+    fileManager.StartNewFile(classes.Name + filenameSuffix);
+    BeginNamespace(namespaceName, code);
 
 #>
-[ServiceContract]
-<#="public"#> <#=code.SpaceAfter(classes.IsAbstract ? "abstract" : string.Empty)#>partial interface I<#=modelName#>Repository : IMappableRepository<<#=entityNamespace#>,<#=modelFullName#>,<#=entityName#>Specification><#=(IsGoingToBeAService)?",IDeserveAService":""#>
+<#="public"#> <#=code.SpaceAfter(classes.IsAbstract ? "abstract" : string.Empty)#>partial class <#= capitalizedClassName #>Repository : LinqRepository<<#=classes.FullName#>>,I<#=classes.Name#>Repository
 {
-}
-<#
-        EndNamespace(namespaceName);
-        WriteAndFlush(file);
+    public <#= capitalizedClassName #>Repository (System.Data.Entity.DbContext context) : base(context)
+    {
+
     }
 }
+<#
+    EndNamespace(namespaceName);
+}
 
+fileManager.Process();
 
 #>
 <#+
-
-void DeleteOldOutputs(List<string> savedOutputs,ProjectItem projItem)
+void WriteHeader(EntityFrameworkTemplateFileManager fileManager, params string[] extraUsings)
 {
-    foreach (ProjectItem childProjectItem in projItem.ProjectItems)
-    {
-        if (!savedOutputs.Contains(childProjectItem.Name))
-        {
-            childProjectItem.Delete();
-        }
-        DeleteOldOutputs(savedOutputs,childProjectItem);
-    }
-}  
-
-private ProjectItems CreateFolder(string folderPath,ProjectItems folderItems,string fileName)
-{
-    ProjectItems existingFolder= null;
-
-    if(folderPath.LastIndexOf("\\") > 0)
-    {
-        string parentPath = folderPath.Remove(folderPath.LastIndexOf("\\"));
-        if(parentPath != string.Empty)
-        {
-            folderItems = CreateFolder(parentPath,folderItems,fileName);
-
-            folderPath = folderPath.Substring(folderPath.LastIndexOf("\\"));
-            folderPath = folderPath.Replace("\\","");
-        }
-    }
-
-    foreach(ProjectItem projItem in folderItems)
-    {
-        if(projItem.Name == folderPath)
-        {
-            existingFolder = projItem.ProjectItems;
-            break;
-        }
-    }
-
-    if(existingFolder == null)
-    {
-        existingFolder = folderItems.AddFolder(folderPath).ProjectItems;
-    }
-    //else
-    //{
-        //if(!string.IsNullOrEmpty(fileName))
-        //{
-            //foreach(ProjectItem projItem in existingFolder)
-            //{
-                //if(projItem.Name == fileName)
-                //{
-                    //projItem.Delete();
-                        //
-                    //break;
-                //}
-            //}
-        //}
-    //}
-
-    return existingFolder;
-}
-
-private void WriteAndFlush(System.IO.FileStream file)
-{
-    System.IO.StreamWriter s = new System.IO.StreamWriter(file);
-
-    s.Write(this.GenerationEnvironment.ToString());
-    this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
-
-    s.Flush();
-}
-
-private System.IO.FileStream BeginFile(string folderPath, string fileName)
-{
-    ProjectItems folderItem = null;
-    if(!string.IsNullOrEmpty(folderPath))
-    {
-        folderItem = CreateFolder(folderPath,GetProjectItemFromTemplate().Collection,fileName);
-    }
-    else
-    {
-        folderItem = GetProjectItemFromTemplate().Collection;
-    }
-
-    string FilePath= System.IO.Path.GetDirectoryName(GetProjectItemFromTemplate().Properties.Item("FullPath").Value.ToString())+((string.IsNullOrEmpty(folderPath))?"":"\\"+folderPath)+"\\" + fileName;
-
-    if(System.IO.File.Exists(FilePath))
-    {
-        System.IO.File.Delete(FilePath);
-    }
-
-    System.IO.FileStream file = System.IO.File.Create(FilePath);
-    folderItem.AddFromFile(FilePath);
-    return file;
-}
-
-void WriteHeader(params string[] extraUsings)
-{
+    fileManager.StartHeader();
 #>
 //------------------------------------------------------------------------------
 // <auto-generated>
-//     This code was generated from a template.
+//     This code was generated from a template (EntityRepositories.tt).
 //
 //     Changes to this file may cause incorrect behavior and will be lost if
 //     the code is regenerated.
@@ -208,6 +89,7 @@ using System;
 using System.Linq;
 <#=String.Join(String.Empty, extraUsings.Select(u => "using " + u + ";" + Environment.NewLine).ToArray())#>
 <#+
+    fileManager.EndBlock();
 }
 
 void BeginNamespace(string namespaceName, CodeGenerationTools code)
@@ -232,6 +114,31 @@ void EndNamespace(string namespaceName)
 }
 <#+
     }
+}
+
+bool VerifyTypesAreCaseInsensitiveUnique(EdmItemCollection itemCollection)
+{
+    Dictionary<string, bool> alreadySeen = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+    foreach(StructuralType type in itemCollection.GetItems<StructuralType>())
+    {
+        if (!(type is EntityType || type is ComplexType))
+        {
+            continue;
+        }
+
+        if (alreadySeen.ContainsKey(type.FullName))
+        {
+            Error(String.Format(CultureInfo.CurrentCulture, "This template does not support types that differ only by case, the types {0} are not supported", type.FullName));
+            return false;
+        }
+        else
+        {
+            alreadySeen.Add(type.FullName, true);
+        }
+
+    }
+
+    return true;
 }
 
     private System.Collections.Generic.List<CodeClass> FindClasses(string nameSpace, string className, string baseClassName)
@@ -353,35 +260,6 @@ void EndNamespace(string namespaceName)
     return projectItem;
 }
 
-    
-private string CommonPrefix(List<string> stringList)
-{
-    if (stringList.Count == 0)
-    {
-        return "";
-    }
-
-    if (stringList.Count == 1)
-    {
-        return stringList[0];
-    }
-
-    int prefixLength = 0;
-
-    foreach (char c in stringList[0])
-    {
-        foreach (string s in stringList)
-        {
-            if (s.Length <= prefixLength || s[prefixLength] != c)
-            {
-                return stringList[0].Substring(0, prefixLength);
-            }
-        }
-        prefixLength++;
-    }
-
-    return stringList[0]; // all strings identical
-}
 private string CapitalizeFirstLetter(string s)
 {
     if (String.IsNullOrEmpty(s))

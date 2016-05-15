@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using BazaarDemo.BackEnd.Domain.Models;
 using System.Net;
+using BazaarDemo.FrontEnd.ConsoleApp.BazaarService;
 
 namespace BazaarDemo.FrontEnd.ConsoleApp
 {
@@ -18,11 +19,19 @@ namespace BazaarDemo.FrontEnd.ConsoleApp
         private static int port = 5369;
         private static string baseAddress = null;
 
+        private static BazaarService.IBazaarService BazaarService { get; set; }
+
         #endregion
 
         public static void Main(string[] args)
         {
             SetUpClient();
+
+            // BazaarService task
+
+            Task0();
+
+            // OData tasks
 
             Task1();
 
@@ -32,6 +41,12 @@ namespace BazaarDemo.FrontEnd.ConsoleApp
         }
 
         #region Tasks
+        private static void Task0()
+        {
+            Console.WriteLine("The number of products in Bazaar is : " + BazaarService.TotalProductsInBazaar());
+
+            BazaarService = null;
+        }
 
         private static void Task1()
         {

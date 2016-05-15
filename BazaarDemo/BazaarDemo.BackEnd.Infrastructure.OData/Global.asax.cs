@@ -11,6 +11,8 @@ using Castle.Windsor.Configuration.Interpreters;
 using Castle.Windsor.Installer;
 using System.Configuration;
 using System.IO;
+using Castle.Facilities.WcfIntegration;
+using BazaarDemo.Global;
 
 namespace BazaarDemo.BackEnd.Infrastructure.OData
 {
@@ -24,7 +26,8 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
             AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
 
             // Initialise Castle Windsor
-            _container = InitializeCastleWindsor();
+            //_container = InitializeCastleWindsor();
+            _container = ContainerManager.Container;
 
             // Set up Web Api Configuration
             GlobalConfiguration.Configure(config => WebApiConfig.Register(config, _container));
@@ -36,13 +39,14 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
                 _container.Dispose();
         }
 
-        private IWindsorContainer InitializeCastleWindsor()
-        {
-            IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
+        //private IWindsorContainer InitializeCastleWindsor()
+        //{
+        //    IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
 
-            container.Install(FromAssembly.InDirectory(new AssemblyFilter(System.AppDomain.CurrentDomain.RelativeSearchPath, "BazaarDemo.BackEnd*.dll")));
-            //container.Install(FromAssembly.This());
-            return container;
-        }
+        //    container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero);
+        //    container.Install(FromAssembly.InDirectory(new AssemblyFilter(System.AppDomain.CurrentDomain.RelativeSearchPath, "BazaarDemo.BackEnd*.dll")));
+        //    //container.Install(FromAssembly.This());
+        //    return container;
+        //}
     }
 }

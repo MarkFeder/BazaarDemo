@@ -8,7 +8,7 @@ using Castle.Windsor.Installer;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using BazaarDemo.BackEnd.Domain.Contracts.DomainServices;
-using BazaarDemo.BackEnd.Domain.Services.Services;
+using BazaarDemo.BackEnd.Domain.Services;
 
 namespace BazaarDemo.BackEnd.Domain.Services.Registers
 {
@@ -18,14 +18,7 @@ namespace BazaarDemo.BackEnd.Domain.Services.Registers
         {
             try
             {
-                container.Register
-                    (
-                        Component.For<IBazaarService>()
-                        .ImplementedBy<BazaarService>()
-                        .LifeStyle.PerWebRequest
-                    );
-
-
+                container.Register(Component.For<IBazaarService>().ImplementedBy<BazaarService>().LifeStyle.PerWebRequest);
             }
             catch (Exception e)
             {

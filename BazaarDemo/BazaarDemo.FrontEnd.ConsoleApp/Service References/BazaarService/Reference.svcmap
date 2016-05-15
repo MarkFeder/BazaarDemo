@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a04eadf1-5762-4c44-9f7e-42ae6d428f33" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:52109/Services/BazaarService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="BazaarService.xsd" MetadataType="Schema" ID="a17d1ce4-2651-4458-8cc2-5ed3c5b8a68b" SourceId="1" SourceUrl="http://localhost:52109/Services/BazaarService.svc?xsd=xsd1" />
+    <MetadataFile FileName="BazaarService1.xsd" MetadataType="Schema" ID="9a99d9fe-ecaf-4767-a187-9f9618b24d53" SourceId="1" SourceUrl="http://localhost:52109/Services/BazaarService.svc?xsd=xsd0" />
+    <MetadataFile FileName="BazaarService.disco" MetadataType="Disco" ID="35c1f340-6f9a-4614-b677-df79e98b5f97" SourceId="1" SourceUrl="http://localhost:52109/Services/BazaarService.svc?disco" />
+    <MetadataFile FileName="BazaarService.wsdl" MetadataType="Wsdl" ID="b84e8cb0-babe-4af4-9cc8-3e6079797b74" SourceId="1" SourceUrl="http://localhost:52109/Services/BazaarService.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
