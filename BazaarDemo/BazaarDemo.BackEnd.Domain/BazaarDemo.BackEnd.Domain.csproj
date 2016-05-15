@@ -53,32 +53,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\DomainServices\IBazaarService.cs" />
-    <Compile Include="Contracts\EntityRepositories\CustomerRepository.cs">
-      <DependentUpon>EntityRepositoryInterfaces.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Contracts\EntityRepositories\ProductFamilyRepository.cs">
-      <DependentUpon>EntityRepositoryInterfaces.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Contracts\EntityRepositories\ProductRepository.cs">
-      <DependentUpon>EntityRepositoryInterfaces.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Contracts\EntityRepositories\CustomerRepository.cs" />
+    <Compile Include="Contracts\EntityRepositories\ProductFamilyRepository.cs" />
+    <Compile Include="Contracts\EntityRepositories\ProductRepository.cs" />
     <Compile Include="Contracts\MappableEntityRepository\IMappableEntityRepository.cs" />
-    <Compile Include="Contracts\Specifications\CustomerSpecification.cs">
-      <DependentUpon>Specifications.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Contracts\Specifications\OrderSpecification.cs">
-      <DependentUpon>Specifications.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Contracts\Specifications\ProductFamilySpecification.cs">
-      <DependentUpon>Specifications.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Contracts\Specifications\ProductSpecification.cs">
-      <DependentUpon>Specifications.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Contracts\Specifications\CustomerSpecification.cs" />
+    <Compile Include="Contracts\Specifications\OrderSpecification.cs" />
+    <Compile Include="Contracts\Specifications\ProductFamilySpecification.cs" />
+    <Compile Include="Contracts\Specifications\ProductSpecification.cs" />
     <Compile Include="Contracts\UnitOfWork\DataBase\IUnitOfWork.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IUnitOfWork.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Order.cs" />
@@ -92,18 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Contracts\EntityRepositories\EntityRepositoryInterfaces.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </Content>
-    <Content Include="Contracts\Specifications\Specifications.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </Content>
-    <Content Include="Contracts\UnitOfWork\DataBase\IUnitOfWork.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IUnitOfWork.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BazaarDemo.BackEnd.Domain.Models\BazaarDemo.BackEnd.Domain.Models.csproj">
