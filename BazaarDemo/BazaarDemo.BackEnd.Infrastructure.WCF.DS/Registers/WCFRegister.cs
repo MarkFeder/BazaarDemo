@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Castle.Facilities.WcfIntegration;
+
 
 namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS.Registers
 {
@@ -17,7 +19,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS.Registers
             {
                 container.Register(Classes.FromAssemblyNamed("BazaarDemo.BackEnd.Domain.Services")
                 .BasedOn(typeof(EverNext.Domain.Contracts.Model.IDeserveAService))
-                .LifestylePerWebRequest()
+                .LifestylePerWcfOperation()
                 .WithService.AllInterfaces()
                 .Configure(component => component.Named(component.Implementation.FindInterfaces(new System.Reflection.TypeFilter((typeObj, criteriaObj) =>
                 {

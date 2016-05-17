@@ -23,7 +23,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
         protected void Application_Start()
         {
             // Set up data directory
-            AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+            SetUpDataDirectory();
 
             // Initialise Castle Windsor
             //_container = InitializeCastleWindsor();
@@ -37,6 +37,11 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
         {
             if (_container != null)
                 _container.Dispose();
+        }
+
+        private void SetUpDataDirectory()
+        {
+            AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
         }
 
         //private IWindsorContainer InitializeCastleWindsor()

@@ -16,6 +16,8 @@ using BazaarDemo.BackEnd.Domain.Contracts.UnitOfWork.DataBase;
 using EverNext.Domain.Contracts.Services;
 using BazaarDemo.BackEnd.Domain.Contracts.EntityRepositories;
 using BazaarDemo.BackEnd.Infrastructure.DataBase.Repositories.Entities;
+using System.Reflection;
+using Castle.Facilities.WcfIntegration;
 
 namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
 {
@@ -31,7 +33,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
 
                 RegisterMapper(container);
 
-                RegisterRepositories(container);
+                RegisterDBServices(container);
 
                 InitializeMappings();
             }
@@ -46,21 +48,21 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
         {
             container.Register(Component.For<DbContext>()
                     .ImplementedBy<BazaarContext>()
-                    .LifestylePerWebRequest());
+                    .LifeStyle.PerWcfOperation());
         }
 
         private void RegisterUoW(IWindsorContainer container)
         {
             container.Register(Component.For<IUnitOfWork>()
                     .ImplementedBy<UnitOfWork.UnitOfWork>()
-                    .LifestylePerWebRequest());
+                    .LifeStyle.PerWcfOperation());
         }
 
         private void RegisterMapper(IWindsorContainer container)
         {
             container.Register(Component.For<IObjectMapper>()
                                     .ImplementedBy<EverNext.Infrastructure.AutoMapper.Mapper>()
-                                    .LifestylePerWebRequest());
+                                    .LifeStyle.PerWcfOperation());
         }
 
         private void RegisterRepositories(IWindsorContainer container)
@@ -98,6 +100,22 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
             PerfomMapping<Order, OrderModel>();
             PerfomMapping<Product, ProductModel>();
             PerfomMapping<ProductFamily, ProductFamilyModel>();
+        }
+
+        private void RegisterDBServices(IWindsorContainer container)
+        {
+            container.Register(Classes.FromAssemblyNamed("BazaarDemo.BackEnd.Infrastructure.DataBase")
+                    .BasedOn(typeof(EverNext.Domain.Contracts.Model.IAggregateRoot))
+                    .LifestylePerWebRequest()
+                    .WithService.AllInterfaces()
+                    .Configure(component => component.Named(component.Implementation.FindInterfaces(new TypeFilter((typeObj, criteriaObj) =>
+                    {
+                        if (((Type)criteriaObj).IsAssignableFrom(typeObj) && ((Type)criteriaObj) != typeObj)
+                            return true;
+                        else
+                            return false;
+
+                    }), typeof(EverNext.Domain.Contracts.Model.IAggregateRoot)).FirstOrDefault().FullName)));
         }
     }
 }

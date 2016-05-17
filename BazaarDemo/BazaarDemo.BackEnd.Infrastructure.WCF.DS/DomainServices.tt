@@ -19,7 +19,7 @@
 // Suffix used to identify the classes being searched for
 string serviceSuffix= "Service";
 // Root namespace of the project holding the classes to look for
-string rootNameSpace = "BazaarDemo.BackEnd.Domain.Contracts.DomainServices";
+string rootNameSpace = "BazaarDemo.BackEnd.Domain.Services";
 // Suffix to append to all the service files created
 string filenameSuffix = ".svc";
 // Root namespace where the repository Interfaces are located
