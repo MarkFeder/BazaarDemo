@@ -19,9 +19,10 @@ using BazaarDemo.BackEnd.Infrastructure.DataBase.Repositories.Entities;
 using System.Reflection;
 using Castle.Facilities.WcfIntegration;
 
+
 namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
 {
-    public class DBRegister : IWindsorInstaller
+    public class DBRegister_Wcf : IWindsorInstaller
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
@@ -32,6 +33,8 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
                 RegisterUoW(container);
 
                 RegisterMapper(container);
+
+                RegisterRepositories(container);
 
                 RegisterDBServices(container);
 
@@ -69,15 +72,15 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
         {
             container.Register(Component.For<ICustomerRepository>()
                 .ImplementedBy<CustomerRepository>()
-                .LifestylePerWebRequest());
+                .LifeStyle.PerWcfOperation());
 
             container.Register(Component.For<IProductFamilyRepository>()
                 .ImplementedBy<ProductFamilyRepository>()
-                .LifestylePerWebRequest());
+                .LifeStyle.PerWcfOperation());
 
             container.Register(Component.For<IProductRepository>()
                 .ImplementedBy<ProductRepository>()
-                .LifestylePerWebRequest());
+                .LifeStyle.PerWcfOperation());
         }
 
         private void PerfomMapping<T, M>()
@@ -106,7 +109,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.DataBase.Registers
         {
             container.Register(Classes.FromAssemblyNamed("BazaarDemo.BackEnd.Infrastructure.DataBase")
                     .BasedOn(typeof(EverNext.Domain.Contracts.Model.IAggregateRoot))
-                    .LifestylePerWebRequest()
+                    .LifestylePerWcfSession()
                     .WithService.AllInterfaces()
                     .Configure(component => component.Named(component.Implementation.FindInterfaces(new TypeFilter((typeObj, criteriaObj) =>
                     {

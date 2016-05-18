@@ -1,4 +1,6 @@
-﻿using BazaarDemo.Global;
+﻿using BazaarDemo.BackEnd.Domain.Services.Registers;
+using BazaarDemo.BackEnd.Infrastructure.DataBase.Registers;
+using BazaarDemo.BackEnd.Infrastructure.WCF.DS.Registers;
 using Castle.Facilities.WcfIntegration;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -19,7 +21,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            _container = ContainerManager.Container;
+            _container = InitializeCastleWindsor();
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -51,6 +53,16 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS
         {
             if (_container != null)
                 _container.Dispose();
+        }
+
+        private IWindsorContainer InitializeCastleWindsor()
+        {
+            IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
+
+            container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero);
+            container.Install(new DBRegister_Wcf(), new WCFRegister(), new ServicesRegister());
+            //container.Install(FromAssembly.This());
+            return container;
         }
     }
 }

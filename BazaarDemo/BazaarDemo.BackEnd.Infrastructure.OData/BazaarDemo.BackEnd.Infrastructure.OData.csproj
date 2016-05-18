@@ -209,10 +209,6 @@
       <Project>{6d459739-63a1-48b5-bede-4390354c3191}</Project>
       <Name>BazaarDemo.BackEnd.Infrastructure.DataBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BazaarDemo.Global\BazaarDemo.Global.csproj">
-      <Project>{591cef58-ea0b-447c-b6b1-92491dfad411}</Project>
-      <Name>BazaarDemo.Global</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,2 +1,3 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="BazaarDemo.BackEnd.Domain.Contracts.DomainServices.IBazaarService"
+
+<%@ ServiceHost Language="C#" Debug="true" Service="BazaarDemo.BackEnd.Domain.Contracts.DomainServices.IBazaarService"
 Factory="Castle.Facilities.WcfIntegration.DefaultServiceHostFactory, Castle.Facilities.WcfIntegration" %>

@@ -120,7 +120,8 @@
     <Compile Include="Context\BazaarContext.cs" />
     <Compile Include="Context\BazaarDBInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Registers\DBRegister.cs" />
+    <Compile Include="Registers\DBRegister_Wcf.cs" />
+    <Compile Include="Registers\DBRegister_WebRequest.cs" />
     <Compile Include="Repositories\Entities\CustomerRepository.cs" />
     <Compile Include="Repositories\Entities\ProductFamilyRepository.cs" />
     <Compile Include="Repositories\Entities\ProductRepository.cs" />

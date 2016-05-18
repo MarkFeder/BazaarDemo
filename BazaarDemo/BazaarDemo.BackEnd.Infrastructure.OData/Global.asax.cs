@@ -12,7 +12,8 @@ using Castle.Windsor.Installer;
 using System.Configuration;
 using System.IO;
 using Castle.Facilities.WcfIntegration;
-using BazaarDemo.Global;
+using BazaarDemo.BackEnd.Infrastructure.DataBase.Registers;
+using BazaarDemo.BackEnd.Infrastructure.OData.Registers;
 
 namespace BazaarDemo.BackEnd.Infrastructure.OData
 {
@@ -26,8 +27,7 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
             SetUpDataDirectory();
 
             // Initialise Castle Windsor
-            //_container = InitializeCastleWindsor();
-            _container = ContainerManager.Container;
+            _container = InitializeCastleWindsor();
 
             // Set up Web Api Configuration
             GlobalConfiguration.Configure(config => WebApiConfig.Register(config, _container));
@@ -44,14 +44,13 @@ namespace BazaarDemo.BackEnd.Infrastructure.OData
             AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
         }
 
-        //private IWindsorContainer InitializeCastleWindsor()
-        //{
-        //    IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
+        private IWindsorContainer InitializeCastleWindsor()
+        {
+            IWindsorContainer container = new WindsorContainer(new XmlInterpreter());
 
-        //    container.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero);
-        //    container.Install(FromAssembly.InDirectory(new AssemblyFilter(System.AppDomain.CurrentDomain.RelativeSearchPath, "BazaarDemo.BackEnd*.dll")));
-        //    //container.Install(FromAssembly.This());
-        //    return container;
-        //}
+            container.Install(new DBRegister_WebRequest(), new ODataRegister());
+            //container.Install(FromAssembly.This());
+            return container;
+        }
     }
 }
