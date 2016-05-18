@@ -21,6 +21,8 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            SetUpDataDirectory();
+
             _container = InitializeCastleWindsor();
         }
 
@@ -53,6 +55,11 @@ namespace BazaarDemo.BackEnd.Infrastructure.WCF.DS
         {
             if (_container != null)
                 _container.Dispose();
+        }
+
+        private void SetUpDataDirectory()
+        {
+            AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
         }
 
         private IWindsorContainer InitializeCastleWindsor()
