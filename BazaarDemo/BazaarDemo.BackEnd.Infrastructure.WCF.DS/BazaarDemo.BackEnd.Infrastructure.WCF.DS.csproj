@@ -116,9 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Services\BazaarService.svc" />
-    <Content Include="DomainServices.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
